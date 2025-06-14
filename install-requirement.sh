@@ -8,7 +8,7 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] h
 
 sudo apt update && sudo apt full-upgrade
 
-sudo apt install bazel-7.5.0
+sudo apt install -y bazel-7.5.0
 sudo ln -s /usr/bin/bazel-7.5.0 /usr/bin/bazel
 
 # 检查是否已安装clang
