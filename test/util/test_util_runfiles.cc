@@ -14,7 +14,8 @@
 
 #include <iostream>
 #include <string>
-
+#include <unistd.h>
+#include <limits.h>
 #include "test/util/fs_util.h"
 #include "test/util/test_util.h"
 #include "tools/cpp/runfiles/runfiles.h"
@@ -23,6 +24,17 @@ namespace gvisor {
 namespace testing {
 
 std::string RunfilePath(std::string path) {
+  // Fix for DragonOS syscall test
+  static const std::string prefix = "test/syscalls/linux/";
+  if (path.substr(0, prefix.length()) == prefix) {
+    // Get current working directory
+    char cwd[PATH_MAX];
+    if (getcwd(cwd, sizeof(cwd)) != nullptr) {
+      return std::string(cwd) + "/" + path.substr(prefix.length());
+    }
+    return path.substr(prefix.length());
+  }
+
   static const bazel::tools::cpp::runfiles::Runfiles* const runfiles = [] {
     std::string error;
     auto* runfiles =
